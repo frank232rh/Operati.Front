@@ -1,0 +1,82 @@
+<mat-card>
+  <mat-card-content>
+
+    <div id="mainContainer">
+      <div id="formContainer">
+        <div id="formPannel">
+          <span>{{isnew ? 'Add' : 'Modify'}} user</span>
+          <form [formGroup]="dataForm" novalidate>
+            <!--Name-->
+            <mat-form-field>
+              <mat-label>Name</mat-label>
+              <input formControlName="name" matInput required>
+              <mat-error *ngIf="dataForm.controls.name.invalid">You must enter a value</mat-error>
+            </mat-form-field>
+            <!--Mail-->
+            <mat-form-field>
+              <mat-label>Mail</mat-label>
+              <input formControlName="mail" matInput required>
+              <mat-error *ngIf="dataForm.controls.mail.invalid">{{getErrorMessage()}}</mat-error>
+            </mat-form-field>
+            <!--Current Password-->
+            <mat-form-field>
+              <mat-label *ngIf="!isnew">Current password</mat-label>
+              <mat-label *ngIf="isnew">Password</mat-label>
+              <input formControlName="password" matInput [type]="hide ? 'password' : 'text'">
+              <button mat-icon-button matSuffix (click)="hide = !hide">
+                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+              <mat-error *ngIf="dataForm.controls.password.invalid">You must enter a value</mat-error>
+            </mat-form-field>
+            <!--New Password-->
+            <mat-form-field *ngIf="!isnew">
+              <mat-label>New password</mat-label>
+              <input formControlName="newPassword" matInput [type]="hide ? 'password' : 'text'">
+              <button mat-icon-button matSuffix (click)="hide = !hide">
+                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+              <mat-error *ngIf="!isnew && dataForm.controls.newPassword.invalid">You must enter a value</mat-error>
+            </mat-form-field>
+            <button mat-raised-button (click)="isnew? save() : update()"
+                    [ngClass]="!dataForm.valid ? 'disabledButton':'enableButton'">
+              Save
+            </button><span>&nbsp;</span>
+            <button mat-raised-button (click)="clearForm()">
+              Clear
+            </button>
+          </form>
+        </div>
+      </div>
+      <div id="tableContainer">
+        <div id="divTable">
+          <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef> Id </th>
+              <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+            </ng-container>
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef> name </th>
+              <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+            <ng-container matColumnDef="mail">
+              <th mat-header-cell *matHeaderCellDef> Mail </th>
+              <td mat-cell *matCellDef="let element"> {{element.mail}} </td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef> Actions </th>
+              <td mat-cell *matCellDef="let element">
+                <mat-icon class="customIcon" fontIcon="edit" (click)="modify(element)" matTooltip="Modify user data"></mat-icon>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="tableHeaders"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                         showFirstLastButtons
+                         aria-label="Select page">
+          </mat-paginator>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
